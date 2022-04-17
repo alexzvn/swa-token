@@ -2,7 +2,11 @@ import { timingSafeEqual } from 'crypto'
 import { tokenInfo, createPayload, Algo, createSignature } from './token'
 
 export default class SWAT {
-  public readonly tokenInfo = tokenInfo
+  
+  /**
+   * Get info of a token
+   */
+  public readonly infoOf = tokenInfo
 
   constructor(
     private readonly secret: string,

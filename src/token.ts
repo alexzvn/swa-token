@@ -3,6 +3,7 @@ import { createHmac } from 'crypto'
 export interface InfoSWAT {
   key: string
   type: string
+  issue_at: number
   expires?: number
   signature: string
 }
@@ -26,7 +27,9 @@ export const createPayload = (type: string, key: string, expires?: number) => {
     throw new Error('Expires must be a number')
   }
 
-  return expires ? `${type}:${key}:${expires}` : `${type}:${key}`
+  const payload = `${type}:${key}:${Date.now()}`
+
+  return expires ? `${payload}:${expires}` : payload
 }
 
 /**
@@ -40,12 +43,13 @@ export const createSignature = (data: string, secret: string, algo: Algo) => hma
 export const tokenInfo = (token: string): InfoSWAT => {
   const [data, signature] = token.split('|')
 
-  const [type, key, expires] = data.split(':')
+  const [type, key, issue_at, expires] = data.split(':')
 
   return {
     type,
     key,
     signature,
+    issue_at: parseInt(issue_at, 10),
     expires: expires ? parseInt(expires, 10) : undefined
   }
 }

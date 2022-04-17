@@ -6,11 +6,11 @@
     "token",
     "short token",
     "short web app token",
-    "swat"
+    "swa-token"
   ],
   "author": "alexzvn <alex.zdea@gmail.com>",
   "license": "ISC",
-  "homepage": "https://github.com/alexzvn/swat#readme",
+  "homepage": "https://github.com/alexzvn/swa-token#readme",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -28,6 +28,6 @@
     "lib"
   ],
   "bugs": {
-    "url": "https://github.com/alexzvn/swat/issues"
+    "url": "https://github.com/alexzvn/swa-token/issues"
   }
 }

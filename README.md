@@ -1,1 +1,1 @@
-# typescript-blank-template
+# Short web application token

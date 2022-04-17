@@ -8,7 +8,7 @@
     "short web app token",
     "swat"
   ],
-  "author": "alexzvn",
+  "author": "alexzvn <alex.zdea@gmail.com>",
   "license": "ISC",
   "homepage": "https://github.com/alexzvn/swat#readme",
   "main": "lib/index.js",

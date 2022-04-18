@@ -1,5 +1,5 @@
 # Short web application token
-The "SWA" token is alternative to JWT token but it just shorter.
+The "SWA" token is similar to JWT token but it just shorter.
 
 Bellow is the schema of SWA token:
 ```txt

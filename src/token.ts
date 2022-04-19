@@ -1,55 +1,80 @@
-import { createHmac } from 'crypto'
+export interface Token {
+  /**
+   * Name of the token
+   */
+  name: string
 
-export interface InfoSWAT {
-  key: string
-  type: string
-  issue_at: number
-  expires?: number
-  signature: string
+  /**
+   * Algorithm used to create the signature
+   */
+  algo: string
+
+  issuer?: string
+
+  subject?: string
+
+  /**
+   * Timestamp seconds
+   */
+  issued_at: number
+
+  /**
+   * Timestamp seconds
+   */
+  expires_at?: number
 }
 
-export type Algo = 'sha256'|'sha512'|'sha1'
-
-const hmac = (data: string, secret: string, algo: Algo) => createHmac(algo, secret)
-  .update(data)
-  .digest('base64')
-  .replace(/=/, '')
-
-/**
- * Create token payload
- */
-export const createPayload = (type: string, key: string, expires?: number) => {
-  if (/:/.test(key) || /:/.test(type)) {
-    throw new Error('Type or key cannot contain ":"')
-  }
-
-  if (expires && typeof expires !== 'number') {
-    throw new Error('Expires must be a number')
-  }
-
-  const payload = `${type}:${key}:${Date.now()}`
-
-  return expires ? `${payload}:${expires}` : payload
+export interface ParsedToken extends Token {
+  signature?: string
 }
 
 /**
- * Create signature from given data
+ * 
+ * @param token 
+ * @returns token without signature
  */
-export const createSignature = (data: string, secret: string, algo: Algo) => hmac(data, secret, algo)
+export const createTokenData = (token: Token): string => {
+  const head = `${token.name}:${token.algo}`
 
-/**
- * Get info from token
- */
-export const tokenInfo = (token: string): InfoSWAT => {
-  const [data, signature] = token.split('|')
+  const payload = `${token.issuer || ''}:${token.subject || ''}:${token.issued_at}:${token.expires_at || ''}`
 
-  const [type, key, issue_at, expires] = data.split(':')
+  return `${head}.${payload}`
+}
+
+export const parseToken = (token: string): ParsedToken => {
+  const [head, payload, signature] = token.split('.')
+
+  const [name, algo] = head.split(':')
+
+  const [issuer, subject, issued_at, expires_at] = payload.split(':')
 
   return {
-    type,
-    key,
+    name,
+    algo,
+
+    issuer,
+    subject,
+    issued_at: parseInt(issued_at, 10),
+    expires_at: parseInt(expires_at, 10),
+
     signature,
-    issue_at: parseInt(issue_at, 10),
-    expires: expires ? parseInt(expires, 10) : undefined
   }
+}
+
+export const validateToken = (token: string) => {
+  const [head, body] = token.split('.')
+
+  if (!head || !body) {
+    return false
+  }
+
+  if (head.split(':').length !== 2) {
+    return false
+  }
+
+  if (body.split(':').length < 4) {
+    return false
+  }
+
+  return true
 }

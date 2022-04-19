@@ -1,13 +1,6 @@
 # Short web application token
 The "SWA" token is alternative to JWT token but it just shorter.
 
-Bellow is the schema of SWA token:
-```txt
-type:id:issue_at:expires|signature
-```
-The `type` and `id` can be anything in string and `issue_at`, `expires` is timestamp. The `expires` field could be empty so the token will be valid forever. The `signature` create by hmac`sha256` and convert to base64 string.
-
-
 ## Install
 
 ```bash
@@ -24,20 +17,13 @@ yarn add swa-token
 ```ts
 import SWAT from 'swa-token'
 
-const secret = 'Your secret key'
-const algo = 'sha256' // optional
-
-const swat = new SWAT(secret, algo)
+const swat = createSWAT('Your-secret-key')
 ```
 
 2. Issue new token
 
 ```ts
-const type = 'user'
-const id = '1'
-const expires = Date.now() + 1000 // optional
-
-const token = swat.create(type, id, expires)
+swat.create('1', 'user')
 ```
 
 3. Verify a token
@@ -49,5 +35,22 @@ swat.verify(token)
 4. Get token info
 
 ```ts
-swat.infoOf(token)
+swat.parse(token)
+```
+
+5. Change to difference signature provider
+
+```ts
+// By default SWAT use HS256 to create signature
+// Bellow is example to change HS512 algo
+swat.use('HS512')
+```
+
+6. Custom signature provider
+
+```ts
+swat.use('YourAlgo', {
+  sign: (data: string) => 'signature',
+  verify: (data: string, signature: string) => true || false
+})
 ```

@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from 'crypto'
+import { createHmac, timingSafeEqual, createSign, createVerify } from 'crypto'
 
 export interface Signer {
   (data: string): string;
@@ -31,6 +31,23 @@ export const createHmacSignatureProvider = (secret: string, algo: string): Signa
     }
 
     return timingSafeEqual(Buffer.from(signature), Buffer.from(computedSignature))
+  }
+
+  return { sign, verify }
+}
+
+export const createRsaSignatureProvider = (publicKey: string, privateKey: string, algo: string): SignatureProvider => {
+  const sign = (data: string): string => createSign(algo)
+    .update(data)
+    .sign(privateKey, 'base64')
+    .replace(/=+/, '')
+
+  const verify = (data: string, signature?: string): boolean => {
+    if (! signature) {
+      return false
+    }
+
+    return createVerify(algo).update(data).verify(publicKey, signature, 'base64')
   }
 
   return { sign, verify }

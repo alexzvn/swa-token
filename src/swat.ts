@@ -1,7 +1,7 @@
 import { createTokenData, parseToken, validateToken } from './token'
 import { createHmacSignatureProvider, SignatureProvider } from "./signature"
 
-export type Algo = 'none' | 'HS384' | 'HS512' | 'HS256'
+export type Algo = 'HS384' | 'HS512' | 'HS256'
 
 export default class SWAT {
   protected providers: { [algo: string]: SignatureProvider } = {}
@@ -11,18 +11,20 @@ export default class SWAT {
   public readonly parse = parseToken
 
   constructor(secret: string) {
-    this.use('HS384', createHmacSignatureProvider(secret, 'sha384'))
-    this.use('HS512', createHmacSignatureProvider(secret, 'sha512'))
-    this.use('HS256', createHmacSignatureProvider(secret, 'sha256'))
+    const hmac = (algo: string) => createHmacSignatureProvider(secret, algo)
+
+    this.use('HS384', hmac('sha384'))
+    this.use('HS512', hmac('sha512'))
+    this.use('HS256', hmac('sha256'))
   }
 
-  public create(subject: string, issuer?: string, expires_at?: number): string {
+  public create(subject: string, issuer?: string, expires_at?: number, issued_at?: number): string {
     const data = createTokenData({
       name: 'swat',
       algo: this.algo,
       subject,
       issuer,
-      issued_at: Math.floor(Date.now() / 1000),
+      issued_at: issued_at || Math.floor(Date.now() / 1000),
       expires_at,
     })
 
@@ -43,7 +45,7 @@ export default class SWAT {
     return this.provider.verify(createTokenData(token), token.signature)
   }
 
-  public use(algo: string, provider?: SignatureProvider) {
+  public use(algo: string & Algo, provider?: SignatureProvider) {
     if (provider) {
       this.providers[algo] = provider
     }

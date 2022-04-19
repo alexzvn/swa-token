@@ -38,6 +38,10 @@ export default class SWAT {
 
     const token = parseToken(_token)
 
+    if (token.expires_at && token.expires_at < Math.floor(Date.now() / 1000)) {
+      return false;
+    }
+
     if (! this.provider) {
       throw new Error(`Can't verify token with algo ${token.algo}`)
     }

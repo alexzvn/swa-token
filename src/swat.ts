@@ -3,20 +3,26 @@ import { createHmacSignatureProvider, SignatureProvider } from "./signature"
 
 export type Algo = 'HS384' | 'HS512' | 'HS256'
 
+export const createSWAT = (secret: string): SWAT => {
+  const hmac = (algo: string) => createHmacSignatureProvider(secret, algo)
+
+  const swat = new SWAT()
+
+  swat.use('HS384', hmac('sha384'))
+  swat.use('HS512', hmac('sha512'))
+  swat.use('HS256', hmac('sha256'))
+
+  return swat
+}
+
 export default class SWAT {
   protected providers: { [algo: string]: SignatureProvider } = {}
 
-  protected algo: string = '';
+  protected algo: string = 'none'
 
   public readonly parse = parseToken
 
-  constructor(secret: string) {
-    const hmac = (algo: string) => createHmacSignatureProvider(secret, algo)
-
-    this.use('HS384', hmac('sha384'))
-    this.use('HS512', hmac('sha512'))
-    this.use('HS256', hmac('sha256'))
-  }
+  constructor() {}
 
   public create(subject: string, issuer?: string, expires_at?: number, issued_at?: number): string {
     const data = createTokenData({

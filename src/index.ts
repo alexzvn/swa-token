@@ -1,6 +1,6 @@
 import { SignatureProvider, Signer, Verifier, createHmacSignatureProvider } from './signature'
 import { Token, ParsedToken, createTokenData, parseToken, validateToken } from './token'
-import SWAT, { createSWAT } from './swat'
+import SWAT, { createSWAT, Algo } from './swat'
 
 export {
   SignatureProvider,
@@ -13,6 +13,7 @@ export {
   validateToken,
   createHmacSignatureProvider,
   createSWAT,
+  Algo,
   SWAT
 }
 

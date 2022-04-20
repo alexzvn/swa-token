@@ -1,7 +1,7 @@
 import { createTokenData, parseToken, validateToken } from './token'
 import { createHmacSignatureProvider, SignatureProvider } from "./signature"
 
-export type Algo = 'HS384' | 'HS512' | 'HS256'
+export type Algo = 'HS256' | 'HS384' | 'HS512' | String
 
 export const createSWAT = (secret: string): SWAT => {
   const hmac = (algo: string) => createHmacSignatureProvider(secret, algo)
@@ -55,7 +55,9 @@ export default class SWAT {
     return this.provider.verify(createTokenData(token), token.signature)
   }
 
-  public use(algo: string & Algo, provider?: SignatureProvider) {
+  public use(algorithm: Algo, provider?: SignatureProvider) {
+    const algo = algorithm.toString()
+
     if (provider) {
       this.providers[algo] = provider
     }

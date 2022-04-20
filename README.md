@@ -1,6 +1,9 @@
 # Short web application token
 The "SWA" token is similar to JWT token but it just shorter.
 
+<img width="1083" alt="image" src="https://user-images.githubusercontent.com/41188285/164160359-cbdb789d-2f31-497e-95e6-83385a772c83.png">
+
+
 ## Install
 
 ```bash

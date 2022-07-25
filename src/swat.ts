@@ -37,7 +37,7 @@ export default class SWAT {
     return `${data}.${this.provider.sign(data)}`
   }
 
-  public verify(_token: string): boolean {
+  public verify(_token: string, issuer?: string): boolean {
     if (! validateToken(_token)) {
       return false;
     }
@@ -46,6 +46,10 @@ export default class SWAT {
 
     if (token.expires_at && token.expires_at < Math.floor(Date.now() / 1000)) {
       return false;
+    }
+
+    if (issuer && issuer !== token.issuer) {
+      return false
     }
 
     if (! this.provider) {

@@ -1,6 +1,6 @@
 export interface Token {
   /**
-   * Name of the token
+   * Name of the token should always return "swat"
    */
   name: string
 

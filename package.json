@@ -9,7 +9,7 @@
     "swa-token"
   ],
   "author": "alexzvn <alex.zdea@gmail.com>",
-  "license": "ISC",
+  "license": "MPL",
   "homepage": "https://github.com/alexzvn/swa-token#readme",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
